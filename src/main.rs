@@ -1,6 +1,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")] // hide console window on Windows in release
 
 use egui_plot::{Bar, BarChart, Legend, Plot};
+use rand::prelude::*;
 
 #[derive(PartialEq)]
 enum Page {
@@ -32,7 +33,8 @@ impl Default for SortVis {
 }
 
 fn shuffle_array(arr: &mut Vec<f64>) {
-    // shuffle
+    let mut rng = rand::rng();
+    arr.shuffle(&mut rng);
 }
 
 impl eframe::App for SortVis {
@@ -47,6 +49,10 @@ impl eframe::App for SortVis {
             ui.separator();
             match self.cur_page {
                 Page::Visualizer => {
+                    if ui.button("shuffle").clicked() {
+                        shuffle_array(&mut self.sort_arr);
+                    }
+
                     let bar_chart = BarChart::new("Sorting Chart", self.sort_arr.iter().enumerate().map(|(i, v)| { Bar::new(i as f64, *v) }).collect());
 
                     Plot::new("Sorting Chart")
