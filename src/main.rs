@@ -18,15 +18,30 @@ impl ToString for Page {
     }
 }
 
+#[derive(PartialEq)]
+enum SortAlg {
+    BubbleSort
+}
+
+impl ToString for SortAlg {
+    fn to_string(&self) -> String {
+        match self {
+            SortAlg::BubbleSort => "Bubble Sort".to_string()
+        }
+    }
+}
+
 pub struct SortVis {
     cur_page: Page,
-    sort_arr: Vec<f64>
+    cur_sort_alg: SortAlg,
+    sort_arr: Vec<f64>,
 }
 
 impl Default for SortVis {
     fn default() -> Self {
         Self {
             cur_page: Page::Visualizer,
+            cur_sort_alg: SortAlg::BubbleSort,
             sort_arr: (0..1000).map(|v| { v as f64 }).collect()
         }
     }
@@ -51,6 +66,9 @@ impl eframe::App for SortVis {
                 Page::Visualizer => {
                     if ui.button("shuffle").clicked() {
                         shuffle_array(&mut self.sort_arr);
+                    }
+                    if ui.button(format!("sort ({})", self.cur_sort_alg.to_string())).clicked() {
+                        // sort
                     }
 
                     let bar_chart = BarChart::new("Sorting Chart", self.sort_arr.iter().enumerate().map(|(i, v)| { Bar::new(i as f64, *v) }).collect());
