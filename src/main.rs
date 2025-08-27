@@ -64,12 +64,14 @@ impl eframe::App for SortVis {
             ui.separator();
             match self.cur_page {
                 Page::Visualizer => {
-                    if ui.button("shuffle").clicked() {
-                        shuffle_array(&mut self.sort_arr);
-                    }
-                    if ui.button(format!("sort ({})", self.cur_sort_alg.to_string())).clicked() {
-                        // sort
-                    }
+                    ui.horizontal(|ui| {
+                        if ui.button("shuffle").clicked() {
+                            shuffle_array(&mut self.sort_arr);
+                        }
+                        if ui.button(format!("sort ({})", self.cur_sort_alg.to_string())).clicked() {
+                            // sort
+                        }
+                    });
 
                     let bar_chart = BarChart::new("Sorting Chart", self.sort_arr.iter().enumerate().map(|(i, v)| { Bar::new(i as f64, *v) }).collect());
 
