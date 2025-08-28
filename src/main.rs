@@ -69,7 +69,11 @@ impl eframe::App for SortVis {
                             shuffle_array(&mut self.sort_arr);
                         }
                         if ui.button(format!("sort ({})", self.cur_sort_alg.to_string())).clicked() {
-                            // sort
+                            match self.cur_sort_alg {
+                                SortAlg::BubbleSort => {
+                                    // bubble sort
+                                }
+                            }
                         }
                     });
 
@@ -91,7 +95,8 @@ impl eframe::App for SortVis {
     }
 }
 
-fn main() -> eframe::Result<()> {
+#[tokio::main]
+async fn main() -> eframe::Result<()> {
     eframe::run_native(
         "Sorting Visualizer",
         eframe::NativeOptions::default(),
