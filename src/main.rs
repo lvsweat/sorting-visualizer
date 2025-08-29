@@ -3,6 +3,9 @@
 use egui_plot::{Bar, BarChart, Legend, Plot};
 use rand::prelude::*;
 
+mod algorithms;
+use algorithms::Step;
+
 #[derive(PartialEq)]
 enum Page {
     Visualizer,
@@ -35,6 +38,7 @@ pub struct SortVis {
     cur_page: Page,
     cur_sort_alg: SortAlg,
     sort_arr: Vec<f64>,
+    bubble_sort: Option<algorithms::BubbleSort>
 }
 
 impl Default for SortVis {
@@ -42,7 +46,8 @@ impl Default for SortVis {
         Self {
             cur_page: Page::Visualizer,
             cur_sort_alg: SortAlg::BubbleSort,
-            sort_arr: (0..1000).map(|v| { v as f64 }).collect()
+            sort_arr: (0..1000).map(|v| { v as f64 }).collect(),
+            bubble_sort: None
         }
     }
 }
@@ -69,11 +74,7 @@ impl eframe::App for SortVis {
                             shuffle_array(&mut self.sort_arr);
                         }
                         if ui.button(format!("sort ({})", self.cur_sort_alg.to_string())).clicked() {
-                            match self.cur_sort_alg {
-                                SortAlg::BubbleSort => {
-                                    // bubble sort
-                                }
-                            }
+                            self.bubble_sort = Some(algorithms::BubbleSort::default());
                         }
                     });
 
@@ -92,6 +93,20 @@ impl eframe::App for SortVis {
                 }
             }
         });
+        match &mut self.bubble_sort {
+            Some(bubble_sort) => {
+                match bubble_sort.step(&mut self.sort_arr) {
+                    Some(b) => {
+                        if b {
+                            self.bubble_sort = None;
+                        }
+                    }
+                    None => {}
+                }
+                ctx.request_repaint();
+            }
+            None => {}
+        };
     }
 }
 
