@@ -38,6 +38,8 @@ pub struct SortVis {
     cur_page: Page,
     cur_sort_alg: SortAlg,
     sort_arr: Vec<f64>,
+    comparisons: u64,
+    array_accesses: u64,
     bubble_sort: Option<algorithms::BubbleSort>
 }
 
@@ -46,7 +48,9 @@ impl Default for SortVis {
         Self {
             cur_page: Page::Visualizer,
             cur_sort_alg: SortAlg::BubbleSort,
-            sort_arr: (0..45).map(|v| { v as f64 }).collect(),
+            sort_arr: (0..35).map(|v| { v as f64 }).collect(),
+            comparisons: 0,
+            array_accesses: 0,
             bubble_sort: None
         }
     }
@@ -71,11 +75,16 @@ impl eframe::App for SortVis {
                 Page::Visualizer => {
                     ui.horizontal(|ui| {
                         if ui.button("shuffle").clicked() {
+                            self.comparisons = 0;
+                            self.array_accesses = 0;
                             shuffle_array(&mut self.sort_arr);
                         }
                         if ui.button(format!("sort ({})", self.cur_sort_alg.to_string())).clicked() {
+                            self.comparisons = 0;
+                            self.array_accesses = 0;
                             self.bubble_sort = Some(algorithms::BubbleSort::default());
                         }
+                        ui.label(format!("Comparisons: {}, Array Accesses: {}", self.comparisons, self.array_accesses));
                     });
 
                     let bar_chart = BarChart::new("Sorting Chart", self.sort_arr.iter().enumerate().map(|(i, v)| { Bar::new(i as f64, *v) }).collect());
@@ -89,13 +98,13 @@ impl eframe::App for SortVis {
                         .show(ui, |chart_ui| { chart_ui.bar_chart(bar_chart); });
                 },
                 Page::SortSelect => {
-
+                    
                 }
             }
         });
         match &mut self.bubble_sort {
             Some(bubble_sort) => {
-                match bubble_sort.step(&mut self.sort_arr) {
+                match bubble_sort.step(&mut self.sort_arr, &mut self.comparisons, &mut self.array_accesses) {
                     Some(b) => {
                         if b {
                             self.bubble_sort = None;

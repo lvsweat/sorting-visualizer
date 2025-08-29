@@ -1,5 +1,5 @@
 pub trait Step {
-    fn step(&mut self, arr: &mut Vec<f64>) -> Option<bool>;
+    fn step(&mut self, arr: &mut Vec<f64>, comparisons: &mut u64, accesses: &mut u64) -> Option<bool>;
 }
 
 pub struct BubbleSort {
@@ -19,13 +19,18 @@ impl Default for BubbleSort {
 }
 
 impl Step for BubbleSort {
-    fn step(&mut self, arr: &mut Vec<f64>) -> Option<bool> {
+    fn step(&mut self, arr: &mut Vec<f64>, comparisons: &mut u64, accesses: &mut u64) -> Option<bool> {
         println!("Step called!");
+        *comparisons += 1;
+        *accesses += 2; // 2 for the comparison
         if arr[self.current_index] > arr[self.current_index + 1] {
             self.current_iter_made_switch = true;
             let temp = arr[self.current_index];
+            *accesses += 1;
             arr[self.current_index] = arr[self.current_index + 1];
+            *accesses += 2;
             arr[self.current_index + 1] = temp;
+            *accesses += 1;
         }
         self.current_index += 1;
         if self.current_index == arr.len() - 1 {
