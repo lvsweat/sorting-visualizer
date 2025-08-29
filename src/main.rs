@@ -46,7 +46,7 @@ impl Default for SortVis {
         Self {
             cur_page: Page::Visualizer,
             cur_sort_alg: SortAlg::BubbleSort,
-            sort_arr: (0..1000).map(|v| { v as f64 }).collect(),
+            sort_arr: (0..45).map(|v| { v as f64 }).collect(),
             bubble_sort: None
         }
     }
