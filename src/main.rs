@@ -1,5 +1,6 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")] // hide console window on Windows in release
 
+use egui::Color32;
 use egui_plot::{Bar, BarChart, Legend, Plot};
 use rand::prelude::*;
 
@@ -89,7 +90,22 @@ impl eframe::App for SortVis {
                         ui.label(format!("Comparisons: {}, Array Accesses: {}", self.comparisons, self.array_accesses));
                     });
 
-                    let bar_chart = BarChart::new("Sorting Chart", self.sort_arr.iter().enumerate().map(|(i, v)| { Bar::new(i as f64, *v) }).collect());
+                    let bar_array = self.sort_arr.iter().enumerate().map(|(i, v)| {
+                        match &self.bubble_sort {
+                            Some(bubble_sort) => {
+                                if i == bubble_sort.current_index || i == (bubble_sort.current_index + 1) {
+                                    Bar::new(i as f64, *v).fill(Color32::from_rgb(0, 155, 50))
+                                }
+                                else {
+                                    Bar::new(i as f64, *v)
+                                }
+                            },
+                            None => {
+                                Bar::new(i as f64, *v)
+                            }
+                        }
+                    }).collect();
+                    let bar_chart = BarChart::new("Sorting Chart", bar_array);
 
                     Plot::new("Sorting Chart")
                         .legend(Legend::default())
