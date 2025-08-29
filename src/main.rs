@@ -23,13 +23,15 @@ impl ToString for Page {
 
 #[derive(PartialEq)]
 enum SortAlg {
-    BubbleSort
+    BubbleSort,
+    RadixSort
 }
 
 impl ToString for SortAlg {
     fn to_string(&self) -> String {
         match self {
-            SortAlg::BubbleSort => "Bubble Sort".to_string()
+            SortAlg::BubbleSort => "Bubble Sort".to_string(),
+            SortAlg::RadixSort => "Radix Sort".to_string()
         }
     }
 }
@@ -98,7 +100,8 @@ impl eframe::App for SortVis {
                         .show(ui, |chart_ui| { chart_ui.bar_chart(bar_chart); });
                 },
                 Page::SortSelect => {
-                    
+                    ui.selectable_value(&mut self.cur_sort_alg, SortAlg::BubbleSort, SortAlg::BubbleSort.to_string());
+                    ui.selectable_value(&mut self.cur_sort_alg, SortAlg::RadixSort, SortAlg::RadixSort.to_string());
                 }
             }
         });
