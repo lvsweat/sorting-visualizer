@@ -20,7 +20,6 @@ impl Default for BubbleSort {
 
 impl Step for BubbleSort {
     fn step(&mut self, arr: &mut Vec<f64>, comparisons: &mut u64, accesses: &mut u64) -> Option<bool> {
-        println!("Step called!");
         *comparisons += 1;
         *accesses += 2; // 2 for the comparison
         if arr[self.current_index] > arr[self.current_index + 1] {
